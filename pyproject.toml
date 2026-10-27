@@ -1,0 +1,9 @@
+[project]
+name = "ventas-inventario-dao"
+version = "0.1.0"
+description = "TP integrador: ventas, inventario y logística CD a locales"
+requires-python = ">=3.12"
+dependencies = ["Django==5.2.18"]
+
+[tool.ruff]
+line-length = 100
