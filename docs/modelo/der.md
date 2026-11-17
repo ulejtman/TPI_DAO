@@ -1,0 +1,217 @@
+# DER de la implementación
+
+Generado desde los modelos Django. Se omiten campos internos de autenticación y tablas de sesiones. Las restricciones adicionales se explican en README.md.
+
+```mermaid
+erDiagram
+  Ubicacion {
+    int id PK
+    string nombre UK
+    string tipo
+    string direccion
+    string telefono
+    boolean activo
+  }
+  Usuario {
+    int id PK
+    string username UK
+    string first_name
+    string last_name
+    boolean is_active
+    string rol
+    int ubicacion_id FK
+  }
+  Proveedor {
+    int id PK
+    string nombre
+    string cuit UK
+    string telefono
+    string direccion
+    boolean activo
+  }
+  Categoria {
+    int id PK
+    string nombre UK
+  }
+  Producto {
+    int id PK
+    string sku UK
+    string nombre
+    int categoria_id FK
+    int proveedor_id FK
+    int precio_centavos
+    boolean activo
+  }
+  ItemInventario {
+    int id PK
+    int producto_id FK
+    int ubicacion_id FK
+    int existencia
+    int reservado
+    int minimo
+  }
+  Caja {
+    int id PK
+    int local_id FK
+  }
+  Compra {
+    int id PK
+    int proveedor_id FK
+    int centro_id FK
+    int usuario_id FK
+    datetime fecha
+    datetime fecha_verificacion
+  }
+  DetalleCompra {
+    int id PK
+    int compra_id FK
+    int producto_id FK
+    int cantidad
+    int costo_centavos
+  }
+  OrdenReposicion {
+    int id PK
+    int origen_id FK
+    int destino_id FK
+    int usuario_id FK
+    datetime fecha
+  }
+  DetalleOrden {
+    int id PK
+    int orden_id FK
+    int producto_id FK
+    int cantidad
+  }
+  Remito {
+    int id PK
+    int orden_id FK
+    datetime fecha
+    datetime fecha_despacho
+    datetime fecha_cierre
+  }
+  Bulto {
+    int id PK
+    int detalle_orden_id FK
+    int remito_id FK
+    int cantidad
+    string precinto UK
+    datetime fecha_recepcion
+    string motivo_rechazo
+    string observacion
+  }
+  EventoEstado {
+    int id PK
+    string ambito
+    string estado
+    datetime fecha
+    int usuario_id FK
+    int compra_id FK
+    int orden_id FK
+    int remito_id FK
+    int bulto_id FK
+  }
+  Comprobante {
+    int id PK
+    string tipo
+    datetime fecha
+    int total_centavos
+  }
+  Venta {
+    int id PK
+    datetime fecha
+    int caja_id FK
+    int usuario_id FK
+    string medio
+    int comprobante_id FK
+    uuid operacion UK
+  }
+  DetalleVenta {
+    int id PK
+    int venta_id FK
+    int producto_id FK
+    int cantidad
+    int precio_centavos
+    int costo_centavos
+  }
+  Devolucion {
+    int id PK
+    int venta_id FK
+    int usuario_id FK
+    datetime fecha
+    string motivo
+    int comprobante_id FK
+    uuid operacion UK
+  }
+  DetalleDevolucion {
+    int id PK
+    int devolucion_id FK
+    int detalle_venta_id FK
+    int cantidad
+    boolean apto
+  }
+  Merma {
+    int id PK
+    int producto_id FK
+    int ubicacion_id FK
+    int cantidad
+    string origen
+    datetime fecha
+    int bulto_id FK
+    int detalle_devolucion_id FK
+  }
+  MovimientoCaja {
+    int id PK
+    int caja_id FK
+    int usuario_id FK
+    datetime fecha
+    string tipo
+    string medio
+    int monto_centavos
+    string motivo
+    int venta_id FK
+    int devolucion_id FK
+    uuid operacion UK
+  }
+  Ubicacion ||--o{ Usuario : ubicacion
+  Categoria ||--o{ Producto : categoria
+  Proveedor ||--o{ Producto : proveedor
+  Producto ||--o{ ItemInventario : producto
+  Ubicacion ||--o{ ItemInventario : ubicacion
+  Ubicacion ||--o| Caja : local
+  Proveedor ||--o{ Compra : proveedor
+  Ubicacion ||--o{ Compra : centro
+  Usuario ||--o{ Compra : usuario
+  Compra ||--o{ DetalleCompra : compra
+  Producto ||--o{ DetalleCompra : producto
+  Ubicacion ||--o{ OrdenReposicion : origen
+  Ubicacion ||--o{ OrdenReposicion : destino
+  Usuario ||--o{ OrdenReposicion : usuario
+  OrdenReposicion ||--o{ DetalleOrden : orden
+  Producto ||--o{ DetalleOrden : producto
+  OrdenReposicion ||--o| Remito : orden
+  DetalleOrden ||--o{ Bulto : detalle_orden
+  Remito |o--o{ Bulto : remito
+  Usuario ||--o{ EventoEstado : usuario
+  Compra |o--o{ EventoEstado : compra
+  OrdenReposicion |o--o{ EventoEstado : orden
+  Remito |o--o{ EventoEstado : remito
+  Bulto |o--o{ EventoEstado : bulto
+  Caja ||--o{ Venta : caja
+  Usuario ||--o{ Venta : usuario
+  Comprobante ||--o| Venta : comprobante
+  Venta ||--o{ DetalleVenta : venta
+  Producto ||--o{ DetalleVenta : producto
+  Venta ||--o{ Devolucion : venta
+  Usuario ||--o{ Devolucion : usuario
+  Comprobante ||--o| Devolucion : comprobante
+  Devolucion ||--o{ DetalleDevolucion : devolucion
+  DetalleVenta ||--o{ DetalleDevolucion : detalle_venta
+  Producto ||--o{ Merma : producto
+  Ubicacion ||--o{ Merma : ubicacion
+  Bulto |o--o| Merma : bulto
+  DetalleDevolucion |o--o| Merma : detalle_devolucion
+  Caja ||--o{ MovimientoCaja : caja
+  Usuario ||--o{ MovimientoCaja : usuario
+  Venta |o--o| MovimientoCaja : venta
+  Devolucion |o--o| MovimientoCaja : devolucion
+```

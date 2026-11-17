@@ -1,0 +1,21 @@
+{% load static %}
+<!doctype html>
+<html lang="es-AR">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>{{ titulo }} · Nexo</title><link rel="icon" type="image/svg+xml" href="{% static 'favicon.svg' %}"><link rel="stylesheet" href="{% static 'app.css' %}?v=20261024.1"><script src="{% static 'app.js' %}?v=20261024.1" defer></script></head>
+<body>
+<a class="saltar" href="#contenido">Ir al contenido</a>
+<aside class="barra">
+  <a class="marca" href="{% url 'inicio' %}"><span class="marca-simbolo" aria-hidden="true">N</span><span>Nexo<small>VENTAS E INVENTARIO</small></span></a>
+  <div class="contexto"><span class="punto"></span>{{ user.ubicacion.nombre }}<small>{{ user.get_rol_display }}</small></div>
+  <nav aria-label="Navegación principal"><a href="{% url 'inicio' %}" {% if activo == 'inicio' %}aria-current="page"{% endif %}>Resumen operativo</a>
+  <span class="nav-etiqueta">GESTIÓN</span>
+  {% for clave, nombre in menu %}<a href="{% url 'listado' clave %}" {% if activo == clave %}aria-current="page"{% endif %}>{{ nombre }}</a>{% endfor %}
+  {% if user.rol != 'VENDEDOR' %}<span class="nav-etiqueta">ANÁLISIS</span><a href="{% url 'reporte' 'ingresos' %}" {% if activo == 'reportes' %}aria-current="page"{% endif %}>Reportes</a>{% endif %}</nav>
+  <div class="pie-barra"><strong>{{ user.get_full_name|default:user.username }}</strong><form method="post" action="{% url 'logout' %}">{% csrf_token %}<button class="salir">Cerrar sesión</button></form><small>TP Integrador · DAO 2026</small></div>
+</aside>
+<div class="zona"><header class="cabecera"><span>Centro de distribución <span class="separador">/</span> Operaciones</span><span class="fecha">{% now 'd M Y' %}</span></header>
+<main id="contenido" tabindex="-1">
+{% for message in messages %}<div class="aviso {{ message.tags }}" role="status">{{ message }}</div>{% endfor %}
+{% block contenido %}{% endblock %}
+</main><footer class="pie">Nexo · Sistema de ventas e inventario <span>Trabajo práctico académico</span></footer></div>
+</body></html>

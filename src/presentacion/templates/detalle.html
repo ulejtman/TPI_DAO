@@ -1,0 +1,7 @@
+{% extends 'base.html' %}{% block contenido %}
+<a class="volver" href="{% url 'listado' tipo %}">← Volver a {{ tipo }}</a>
+<div class="titulo-fila"><div><p class="sobre">DETALLE DE OPERACIÓN</p><h1>{{ titulo }}</h1>{% if objeto.estado %}<span class="estado">{{ objeto.estado }}</span>{% endif %}</div><div class="acciones">{% for accion in acciones %}<a class="boton {% if not forloop.first %}secundario{% endif %}" href="{{ accion.url }}">{{ accion.titulo }}</a>{% endfor %}{% if comprobante %}<a class="boton secundario" href="{% url 'comprobante' comprobante.pk %}">Ver comprobante</a>{% endif %}</div></div>
+<section class="panel"><dl class="datos">{% for etiqueta, valor in info %}<div><dt>{{ etiqueta }}</dt><dd>{{ valor }}</dd></div>{% endfor %}</dl>{% if columnas %}{% include 'tabla.html' %}{% endif %}</section>
+{% if enlaces %}<section class="panel relacionados"><h2>Registros relacionados</h2>{% for nombre, url in enlaces %}<a href="{{ url }}">{{ nombre }} →</a>{% endfor %}</section>{% endif %}
+{% if eventos %}<section class="panel historial"><div class="panel-titulo"><div><p class="sobre">AUDITORÍA</p><h2>Historial de estados</h2></div><span class="nota">Registros que solo se agregan</span></div><ol>{% for e in eventos %}<li><strong>{{ e.estado }}</strong><span>{{ e.fecha|date:'d/m/Y H:i:s' }} · {{ e.usuario }}</span></li>{% endfor %}</ol></section>{% endif %}
+{% endblock %}
